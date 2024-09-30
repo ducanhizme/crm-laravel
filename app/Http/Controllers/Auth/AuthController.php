@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuthenticationController extends Controller
+class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
