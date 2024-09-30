@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Workspace;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\WorkspaceRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\User;
@@ -56,8 +57,5 @@ class WorkspaceController extends Controller
         $workspace->delete();
         return $this->successResponse([], 'Workspace deleted successfully');
     }
-
-    ///Todo: Add method invite user to workspace
     /// Todo: Add method remove user from workspace
-    /// Todo: Add method accept invitation to workspace
 }

@@ -49,5 +49,4 @@ class AuthenticationController extends Controller
         return $this->successResponse(['access_token' => $token->plainTextToken], 'Token refreshed successfully');
     }
 
-    //Todo : Add method to verify email
 }
