@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\InvitationSentEvent;
+use App\Listeners\SendEmailInvitation;
 //use App\Listeners\SendEmailVerificationNotification;
 use App\Events\RegisterEvent;
 use App\Listeners\SendEmailVerificationNotification;
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Event::listen(InvitationSentEvent::class,SendEmailInvitation::class);
         Event::listen(RegisterEvent::class, SendEmailVerificationNotification::class);
     }
 }

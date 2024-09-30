@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Http\Requests\WorkspaceRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -62,6 +64,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Workspace::class,'created_by');
     }
 
+    public function currentWorkspace(): BelongsTo
+    {
+        return $this->belongsTo(Workspace::class, 'current_workspace_id');
+    }
+
     public function createWorkspace($request){
         $workspace = $this->createdWorkspaces()->create($request);
         $this->joinWorkspace($workspace);
@@ -73,4 +80,17 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->joinedWorkspace()->attach($workspace);
     }
 
+    public static function inviteToWorkspace(string $email)
+    {
+        $workspace = Auth::user()->currentWorkspace;
+        return $workspace->invitations()->create([
+            'email' =>$email,
+            'token' => \Str::random(32),
+            'expires_at' => now()->addHour(),
+        ]);
+    }
+
+    public function hasJoinedWorkspace(string $workspaceId): bool{
+        return $this->joinedWorkspace()->where('workspace_id', $workspaceId)->exists();
+    }
 }
