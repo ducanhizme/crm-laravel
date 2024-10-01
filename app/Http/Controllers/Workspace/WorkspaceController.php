@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Workspace;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\WorkspaceRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WorkspaceController extends Controller
 {
@@ -57,7 +60,20 @@ class WorkspaceController extends Controller
         return $this->successResponse([], 'Workspace deleted successfully');
     }
 
-    ///Todo: Add method invite user to workspace
-    /// Todo: Add method remove user from workspace
-    /// Todo: Add method accept invitation to workspace
+    public function removeUser(Workspace $workspace, Request $request){
+            $userId= $request->validate([
+                'user_id' => ['required']
+            ])['user_id'];
+            $workspace->users()->detach($userId);
+        return $this->successResponse(new WorkspaceResource($workspace), 'Remove user workspace  successfully');
+    }
+
+    public function leaveWorkspace(Request $request)
+    {
+        $workspaceId = $request->validate([
+            'workspace_id' => ['required','exists:workspaces,id']
+        ])['workspace_id'];
+        $status = $this->currentUser->leaveWorkspace($workspaceId) ? 'successfully': 'failed';
+        return $this->successResponse([], 'Left workspace '.$status);
+    }
 }

@@ -32,4 +32,9 @@ class Workspace extends Model
         return $this->users()->where('user_id', $user->id)->exists();
     }
 
+    public function currentWorkspace(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(User::class, 'current_workspace_id');
+    }
+
 }
