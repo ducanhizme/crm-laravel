@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
@@ -16,7 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-       'first_name',
+        'first_name',
         'last_name',
         'email',
         'password',
@@ -64,11 +65,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Workspace::class,'created_by');
     }
 
-    public function currentWorkspace(): BelongsTo
-    {
-        return $this->belongsTo(Workspace::class, 'current_workspace_id');
-    }
-
     public function createWorkspace($request){
         $workspace = $this->createdWorkspaces()->create($request);
         $this->joinWorkspace($workspace);
@@ -80,17 +76,24 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->joinedWorkspace()->attach($workspace);
     }
 
-    public static function inviteToWorkspace(string $email)
+    public static function inviteToWorkspace(Request $request): Invitation
     {
-        $workspace = Auth::user()->currentWorkspace;
+        $workspace = $request->current_workspace;
         return $workspace->invitations()->create([
-            'email' =>$email,
+            'email' => $request->email,
             'token' => \Str::random(32),
             'expires_at' => now()->addHour(),
-        ]);
+        ]) ;
     }
 
-    public function hasJoinedWorkspace(string $workspaceId): bool{
+    public function hasJoinedWorkspace(string $workspaceId): bool
+    {
         return $this->joinedWorkspace()->where('workspace_id', $workspaceId)->exists();
+    }
+
+
+    public function leaveWorkspace(string $workspaceId): int
+    {
+        return $this->joinedWorkspace()->detach($workspaceId);
     }
 }

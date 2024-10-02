@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 class RegisterEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
 
     /**
      * Create a new event instance.

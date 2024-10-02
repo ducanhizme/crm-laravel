@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        EventServiceProvider::disableEventDiscovery();
         \Event::listen(InvitationSentEvent::class,SendEmailInvitation::class);
         Event::listen(RegisterEvent::class, SendEmailVerificationNotification::class);
     }

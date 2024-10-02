@@ -31,4 +31,6 @@ class WorkspaceRequest extends FormRequest
             'error' => $validator->errors()->first(),
         ], 422));
     }
+
+
 }
