@@ -62,12 +62,10 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function createdWorkspaces(): HasMany
     {
-        return $this->hasMany(Workspace::class, 'created_by');
+        return $this->hasMany(Workspace::class,'created_by');
     }
 
-
-    public function createWorkspace($request)
-    {
+    public function createWorkspace($request){
         $workspace = $this->createdWorkspaces()->create($request);
         $this->joinWorkspace($workspace);
         return $workspace;
