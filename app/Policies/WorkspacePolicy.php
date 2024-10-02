@@ -35,4 +35,11 @@ class WorkspacePolicy
     {
         return  $user->id === $workspace->created_by;
     }
+
+    public function removeUser(User $user, Workspace $workspace,$onRemoveUserId): bool
+    {
+        return  $user->id === $workspace->created_by && $workspace->hasMember(User::find($onRemoveUserId));
+    }
+
 }
+

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
@@ -64,10 +65,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Workspace::class, 'created_by');
     }
 
-    public function currentWorkspace(): BelongsTo
-    {
-        return $this->belongsTo(Workspace::class, 'current_workspace_id');
-    }
 
     public function createWorkspace($request)
     {
@@ -81,14 +78,14 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->joinedWorkspace()->attach($workspace);
     }
 
-    public static function inviteToWorkspace(string $email)
+    public static function inviteToWorkspace(Request $request): Invitation
     {
-        $workspace = Auth::user()->currentWorkspace;
+        $workspace = $request->current_workspace;
         return $workspace->invitations()->create([
-            'email' => $email,
+            'email' => $request->email,
             'token' => \Str::random(32),
             'expires_at' => now()->addHour(),
-        ]);
+        ]) ;
     }
 
     public function hasJoinedWorkspace(string $workspaceId): bool
@@ -99,11 +96,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function leaveWorkspace(string $workspaceId): int
     {
-        $detach = $this->joinedWorkspace()->detach($workspaceId);
-        if ($this->currentWorkspace && $this->currentWorkspace->id  == $workspaceId) {
-            $this->current_workspace_id = $this->joinedWorkspace()->first()?->id  ??   null;
-            $this->save();
-        }
-        return $detach;
+        return $this->joinedWorkspace()->detach($workspaceId);
     }
 }

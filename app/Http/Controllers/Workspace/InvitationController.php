@@ -14,7 +14,7 @@ class InvitationController extends Controller
 {
     public function invite(InvitationRequest $request)
     {
-        $invitation = User::inviteToWorkspace($request->email);
+        $invitation = User::inviteToWorkspace($request);
         InvitationSentEvent::dispatch($invitation);
         return $this->successResponse(new InvitationResource($invitation), 'Invitation sent successfully');
     }

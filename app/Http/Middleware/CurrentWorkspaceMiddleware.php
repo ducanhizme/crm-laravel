@@ -11,8 +11,8 @@ class CurrentWorkspaceMiddleware
     public function handle(Request $request, Closure $next)
     {
         $currentWorkspaceId = $request->header('x-current-workspace-id');
-        if ($currentWorkspace = Workspace::where('id', $currentWorkspaceId)) {
-            $request->merge(['currentWorkspace' => $currentWorkspace]);
+        if ($currentWorkspace = Workspace::where('id', $currentWorkspaceId)->get()->first()) {
+            $request->merge(['current_workspace' => $currentWorkspace]);
             return $next($request);
         }else{
             return response()->json(['message' => 'Invalid workspace'], 404);

@@ -24,14 +24,14 @@ Route::prefix('auth')->group(function () {
 
 Route::apiResource('workspaces', WorkspaceController::class)
     ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
-Route::post('workspaces/{workspace}/remove-user', [WorkspaceController::class, 'removeUser'])
-    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
+Route::post('workspaces/remove-user', [WorkspaceController::class, 'removeUser'])
+    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
 
-Route::post('workspaces/leave', [WorkspaceController::class, 'leaveWorkspace'])
-    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
+Route::post('workspaces/leave-workspaces', [WorkspaceController::class, 'leaveWorkspaces'])
+    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
 
 Route::post('invitations', [App\Http\Controllers\Workspace\InvitationController::class, 'invite'])
-    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]);
+    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
 
 Route::get('accept-invitation/{token}', [App\Http\Controllers\Workspace\InvitationController::class, 'accept'])
     ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value, \App\Http\Middleware\ValidateInvitationToken::class]);
