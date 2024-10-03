@@ -38,4 +38,14 @@ class Workspace extends Model
         return $this->hasMany(Invitation::class);
     }
 
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class,'workspace_id');
+    }
+
+    public function statuses(): HasMany
+    {
+        return $this->hasMany(Status::class);
+    }
+
 }
