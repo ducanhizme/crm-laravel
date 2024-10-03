@@ -38,4 +38,9 @@ class Workspace extends Model
         return $this->hasMany(Invitation::class);
     }
 
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
+
 }

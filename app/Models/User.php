@@ -96,4 +96,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->joinedWorkspace()->detach($workspaceId);
     }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
 }
