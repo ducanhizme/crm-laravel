@@ -46,6 +46,4 @@ class GoogleAuthController extends Controller
             return $this->errorResponse('An error occurred during Google login'. $e->getMessage(), 500);
         }
     }
-
-
 }
