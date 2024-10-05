@@ -15,7 +15,6 @@ class Note extends Model
         'title',
         'body',
         'created_by',
-        'attachment',
     ];
 
     public function workspace(): BelongsTo

@@ -23,7 +23,7 @@ class NoteController extends Controller
     {
         $this->authorize('create', Note::class);
         $currentWorkspace = $request->currentWorkspace;
-        $pathFile = $request->file('attachment')->store('attachments');
+        $note = $currentWorkspace->createNote($request);
         return new NoteResource($note);
     }
 

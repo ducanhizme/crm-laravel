@@ -43,4 +43,9 @@ class Workspace extends Model
         return $this->hasMany(Note::class);
     }
 
+    public function createNote($notes):Note
+    {
+       return $this->notes()->create($notes);
+    }
+
 }

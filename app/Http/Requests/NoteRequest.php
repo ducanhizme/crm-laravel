@@ -13,7 +13,6 @@ class NoteRequest extends FormRequest
             'title' => ['nullable'],
             'body' => ['nullable'],
             'created_by' => ['required', 'exists:users'],
-            'attachment' => ['nullable'],
         ];
     }
 
