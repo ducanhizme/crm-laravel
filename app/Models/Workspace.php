@@ -43,9 +43,9 @@ class Workspace extends Model
         return $this->hasMany(Note::class);
     }
 
-    public function createNote($notes):Note
+    public function createNote($data):Note
     {
-       return $this->notes()->create($notes);
+        $note = $data instanceof Note ? $data :array_merge($data, ['created_by' =>auth()->id()]);
+       return $this->notes()->create($note);
     }
-
 }

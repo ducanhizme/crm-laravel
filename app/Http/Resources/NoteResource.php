@@ -18,10 +18,8 @@ class NoteResource extends JsonResource
             'attachment' => $this->attachment,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
             'workspace_id' => $this->workspace_id,
             'created_by' => $this->created_by,
-
             'workspace' => new WorkspaceResource($this->whenLoaded('workspace')),
         ];
     }

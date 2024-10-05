@@ -12,16 +12,20 @@ class NoteController extends Controller
 {
     use AuthorizesRequests;
 
+
+    public function __construct()
+    {
+        $currentWorkspace = request()->currentWorkspace;
+        $this->authorizeResource(Note::class, ['note', $currentWorkspace]);
+    }
+
     public function index()
     {
-        $this->authorize('viewAny', Note::class);
-
         return NoteResource::collection(Note::all());
     }
 
     public function store(NoteRequest $request)
     {
-        $this->authorize('create', Note::class);
         $currentWorkspace = $request->currentWorkspace;
         $note = $currentWorkspace->createNote($request);
         return new NoteResource($note);
@@ -29,26 +33,19 @@ class NoteController extends Controller
 
     public function show(Note $note)
     {
-        $this->authorize('view', $note);
-
         return new NoteResource($note);
     }
 
     public function update(NoteRequest $request, Note $note)
     {
-        $this->authorize('update', $note);
-
         $note->update($request->validated());
-
         return new NoteResource($note);
     }
 
     public function destroy(Note $note)
     {
-        $this->authorize('delete', $note);
 
         $note->delete();
-
         return response()->json();
     }
 }

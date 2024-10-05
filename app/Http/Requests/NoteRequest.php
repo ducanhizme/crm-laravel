@@ -12,7 +12,6 @@ class NoteRequest extends FormRequest
             'workspace_id' => ['required', 'exists:workspaces'],
             'title' => ['nullable'],
             'body' => ['nullable'],
-            'created_by' => ['required', 'exists:users'],
         ];
     }
 
