@@ -9,7 +9,6 @@ class NoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'workspace_id' => ['required', 'exists:workspaces'],
             'title' => ['nullable'],
             'body' => ['nullable'],
         ];

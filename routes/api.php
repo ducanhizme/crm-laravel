@@ -2,9 +2,9 @@
 
 use App\Enums\TokenAbility;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Workspace\WorkspaceController;
 use Illuminate\Support\Facades\Route;
+
 Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
     ->name('verification.verify')
     ->middleware('auth:sanctum', 'signed');
@@ -42,4 +42,7 @@ Route::post('invitations', [App\Http\Controllers\Workspace\InvitationController:
 
 Route::get('accept-invitation/{token}', [App\Http\Controllers\Workspace\InvitationController::class, 'accept'])
     ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value, \App\Http\Middleware\ValidateInvitationToken::class]);
+
+Route::apiResource('notes', \App\Http\Controllers\Note\NoteController::class)
+    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
 

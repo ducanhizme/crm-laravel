@@ -16,7 +16,7 @@ class NotePolicy
         return $workspace->hasMember($user);
     }
 
-    public function view(User $user, Note $note): bool
+    public function view(User $user, Note $note,Workspace $workspace): bool
     {
         return $note->workspace->hasMember($user);
     }
@@ -26,9 +26,9 @@ class NotePolicy
         return true;
     }
 
-    public function update(User $user, Note $note): bool
+    public function update(User $user, Note $note,Workspace $workspace): bool
     {
-        return $note->created_by === $user->id && $note->workspace->hasMember($user);
+        return $note->created_by === $user->id && $note->workspace_id === $workspace->id;
     }
 
     public function delete(User $user, Note $note): bool
