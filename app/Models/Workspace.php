@@ -58,4 +58,14 @@ class Workspace extends Model
         return $this->hasMany(Status::class);
     }
 
+    public function companies(): HasMany
+    {
+        return $this->hasMany(Company::class);
+    }
+
+    public function people(): HasMany
+    {
+        return $this->hasMany(People::class);
+    }
+
 }

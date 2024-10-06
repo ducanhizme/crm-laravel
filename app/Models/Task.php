@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Task extends Model
 {
@@ -27,7 +28,7 @@ class Task extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class,);
+        return $this->belongsTo(User::class);
     }
 
     public function assignee(): BelongsTo
@@ -40,10 +41,20 @@ class Task extends Model
         return $this->belongsTo(Status::class);
     }
 
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     protected function casts(): array
     {
         return [
             'due_date' => 'datetime',
         ];
+    }
+
+    public function people(): HasMany
+    {
+        return $this->hasMany(People::class);
     }
 }

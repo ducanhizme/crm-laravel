@@ -64,4 +64,8 @@ Route::apiResource('statuses', \App\Http\Controllers\Task\StatusController::clas
 //});
 Route::apiResource('notes', \App\Http\Controllers\Note\NoteController::class)
     ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
+Route::apiResource('companies', \App\Http\Controllers\CompanyController::class)
+    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
+Route::apiResource('people', \App\Http\Controllers\PeopleController::class)
+    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
 

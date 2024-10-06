@@ -17,7 +17,7 @@ class CurrentWorkspaceMiddleware
             $request->merge(['current_workspace' => $currentWorkspace]);
             return $next($request);
         }else{
-            return $this->errorResponse('Workspace has id '.$currentWorkspaceId.' not found', 404);
+            return $this->respondError('Workspace has id '.$currentWorkspaceId.' not found', 404);
         }
     }
 }
