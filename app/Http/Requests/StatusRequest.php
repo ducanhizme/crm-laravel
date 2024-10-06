@@ -9,7 +9,6 @@ class StatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'workspace_id' => ['required', 'exists:workspaces'],
             'name' => ['required'],
         ];
     }

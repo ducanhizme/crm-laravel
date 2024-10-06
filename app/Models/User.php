@@ -101,6 +101,20 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->joinedWorkspace()->detach($workspaceId);
     }
 
+    public function tasks(): HasMany{
+      return $this->hasMany(Task::class,'created_by');
+    }
+
+    public function assignedTasks(): HasMany
+    {
+        return $this->HasMany(Task::class,'assignee');
+    }
+
+    public function createTask($request){
+        return $this->tasks()->create($request);
+    }
+
+
     public function notes(): HasMany
     {
         return $this->hasMany(Note::class);

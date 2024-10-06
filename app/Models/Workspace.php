@@ -48,4 +48,14 @@ class Workspace extends Model
         $note = $data instanceof Note ? $data :array_merge($data, ['created_by' =>auth()->id()]);
        return $this->notes()->create($note);
     }
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class,'workspace_id');
+    }
+
+    public function statuses(): HasMany
+    {
+        return $this->hasMany(Status::class);
+    }
+
 }

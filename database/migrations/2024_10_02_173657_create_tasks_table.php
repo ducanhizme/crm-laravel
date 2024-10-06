@@ -10,11 +10,11 @@ return new class extends Migration {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('workspace_id')->constrained('workspaces');
-            $table->longText('title');
+            $table->longText('title')->nullable();
             $table->foreignId('created_by')->constrained('users');
-            $table->dateTime('due_date');
+            $table->dateTime('due_date')->nullable();
             $table->foreignId('assignee')->nullable()->constrained('users');
-            $table->longText('body');
+            $table->longText('body')->nullable();
             $table->timestamps();
         });
     }

@@ -17,21 +17,27 @@ class Task extends Model
         'due_date',
         'assignee',
         'body',
+        'status_id',
     ];
 
     public function workspace(): BelongsTo
     {
-        return $this->belongsTo(Workspace::class);
+        return $this->belongsTo(Workspace::class,'workspace_id');
     }
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class,);
     }
 
     public function assignee(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assignee');
+        return $this->belongsTo(User::class);
+    }
+
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(Status::class);
     }
 
     protected function casts(): array

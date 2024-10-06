@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('task_status', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('workspace_id')->constrained('workspaces');
-            $table->foreignId('task_id')->constrained('tasks');
-            $table->timestamps();
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->foreignId('status_id')->nullable()->constrained('statuses');
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_status');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropForeign(['status_id']);
+            $table->dropColumn('status_id');
+        });
     }
 };
