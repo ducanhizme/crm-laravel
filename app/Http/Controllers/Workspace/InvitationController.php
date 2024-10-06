@@ -15,7 +15,7 @@ class InvitationController extends Controller
     public function invite(InvitationRequest $request)
     {
         $invitation = User::inviteToWorkspace($request);
-        return $this->successResponse(new InvitationResource($invitation), 'Invitation sent successfully');
+        return $this->respondWithSuccess(new InvitationResource($invitation), 'Invitation sent successfully');
     }
 
     public function accept($token)
@@ -23,6 +23,6 @@ class InvitationController extends Controller
         $invitation = \Request::get('invitation');
         $invitation->workspace->users()->attach(\Auth::id());
         Invitation::where('email', $invitation->email)->delete();
-        return $this->successResponse([], 'Invitation accepted successfully');
+        return $this->respondOk('Invitation accepted successfully');
     }
 }

@@ -14,7 +14,7 @@ class GoogleAuthController extends Controller
     use HasApiResponse;
     public function redirect(){
        $url = Socialite::driver('google')->stateless()->redirect()->getTargetUrl();
-       return $this->successResponse(['url' => $url], 'Google login redirect url generated successfully');
+       return $this->respondWithSuccess(['url' => $url], 'Google login redirect url generated successfully');
     }
 
     public function callback(){
@@ -33,8 +33,7 @@ class GoogleAuthController extends Controller
         \Auth::login($user);
         $accessToken = $user->createToken('access_token', [TokenAbility::ACCESS_API->value], Carbon::now()->addMinute(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('refresh_token', [TokenAbility::ISSUE_ACCESS_TOKEN->value], Carbon::now()->addMinute(config('sanctum.rt_expiration')));
-            \Log::info('Callback method completed successfully');
-        return $this->successResponse(
+        return $this->respondWithSuccess(
             [
                 'user' => $user,
                 'access_token' => $accessToken->plainTextToken,
@@ -43,7 +42,7 @@ class GoogleAuthController extends Controller
             'Google user logged in successfully'
         );
         } catch (\Exception $e) {
-            return $this->errorResponse('An error occurred during Google login'. $e->getMessage(), 500);
+            return $this->respondError('An error occurred during Google login'. $e->getMessage());
         }
     }
 }

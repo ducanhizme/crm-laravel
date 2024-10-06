@@ -26,21 +26,21 @@ class WorkspaceController extends Controller
     {
         $this->authorize('viewAny', Workspace::class);
         $workspaces = $this->currentUser->joinedWorkspace()->get();
-        return $this->successResponse(WorkspaceResource::collection($workspaces),"Workspaces retrieved successfully");
+        return $this->respondWithSuccess(WorkspaceResource::collection($workspaces),"Workspaces retrieved successfully");
     }
 
     public function store(WorkspaceRequest $request)
     {
         $this->authorize('create', Workspace::class);
         $workspace = $this->currentUser->createWorkspace($request->validated());
-        return $this->successResponse(new WorkspaceResource($workspace), 'Workspace created successfully');
+        return $this->respondCreated(new WorkspaceResource($workspace), 'Workspace created successfully');
     }
 
     public function show(Workspace $workspace)
     {
         $this->authorize('view', $workspace);
         $memberCount = $workspace->users()->count();
-        return $this->successResponse([
+        return $this->respondWithSuccess([
             'workspace' => new WorkspaceResource($workspace),
             'member_count' => $memberCount,
         ], 'Workspace created successfully');
@@ -50,14 +50,14 @@ class WorkspaceController extends Controller
     {
         $this->authorize('update', $workspace);
         $workspace->update($request->validated());
-        return $this->successResponse(new WorkspaceResource($workspace), 'Workspace updated successfully');
+        return $this->respondWithSuccess(new WorkspaceResource($workspace), 'Workspace updated successfully');
     }
 
     public function destroy(Workspace $workspace)
     {
         $this->authorize('delete', $workspace);
         $workspace->delete();
-        return $this->successResponse([], 'Workspace deleted successfully');
+        return $this->respondWithSuccess([], 'Workspace deleted successfully');
     }
 
     public function removeUser(Request $request){
@@ -67,7 +67,7 @@ class WorkspaceController extends Controller
             ])['user_id'];
             $this->authorize('removeUser', [$workspace, $userId]);
             $workspace->users()->detach($userId);
-        return $this->successResponse(new WorkspaceResource($workspace), 'Remove user workspace  successfully');
+        return $this->respondWithSuccess(new WorkspaceResource($workspace), 'Remove user workspace  successfully');
     }
 
     public function leaveWorkspaces (Request $request)
@@ -76,6 +76,6 @@ class WorkspaceController extends Controller
             'workspace_id' => ['required','exists:workspaces,id']
         ])['workspace_id'];
         $status = $this->currentUser->leaveWorkspace($workspaceId) ? 'successfully': 'failed';
-        return $this->successResponse([], 'Left workspace '.$status);
+        return $this->respondOk('Left workspace '.$status);
     }
 }

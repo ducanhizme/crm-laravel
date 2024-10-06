@@ -18,7 +18,7 @@ class StatusController extends Controller
         $currentWorkspace = $request->current_workspace;
         $this->authorize('viewAny', $currentWorkspace);
         $statuses = $currentWorkspace->statuses()->with('tasks')->get();
-        return $this->successResponse($statuses, 'Statuses retrieved successfully');
+        return $this->respondWithSuccess($statuses, 'Statuses retrieved successfully');
     }
 
     public function store(StatusRequest $request)
@@ -26,14 +26,14 @@ class StatusController extends Controller
         $this->authorize('create', Status::class);
         $currentWorkspace = $request->current_workspace;
         $status = $currentWorkspace->statuses()->create($request->validated());
-        return $this->successResponse(new StatusResource($status), 'Status created successfully', 201);
+        return $this->respondCreated(new StatusResource($status), 'Status created successfully', 201);
     }
 
     public function show(Request $request, Status $status)
     {
         $currentWorkspace = $request->current_workspace;
         $this->authorize('view', [$status, $currentWorkspace]);
-        return $this->successResponse(new StatusResource($status), 'Status retrieved successfully');
+        return $this->respondWithSuccess(new StatusResource($status), 'Status retrieved successfully');
     }
 
     public function update(StatusRequest $request, Status $status)
@@ -41,7 +41,7 @@ class StatusController extends Controller
         $currentWorkspace = $request->current_workspace;
         $this->authorize('update', [$status, $currentWorkspace]);
         $status->update($request->validated());
-        return $this->successResponse(new StatusResource($status), 'Status updated successfully');
+        return $this->respondWithSuccess(new StatusResource($status), 'Status updated successfully');
     }
 
     public function destroy(Request $request,Status $status)
@@ -49,6 +49,6 @@ class StatusController extends Controller
         $currentWorkspace = $request->current_workspace;
         $this->authorize('update', [$status, $currentWorkspace]);
         $status->delete();
-        return $this->successResponse([],'Status deleted successfully');
+        return $this->respondOk('Status deleted successfully');
     }
 }

@@ -19,18 +19,18 @@ class AuthController extends Controller
     {
         $user = User::create($request->validated());
         event(new RegisterEvent($user));
-        return $this->successResponse(new UserResource($user), 'User registered successfully. Please verify your email that you provided', Response::HTTP_CREATED);
+        return $this->respondCreated(new UserResource($user), 'User registered successfully. Please verify your email that you provided');
     }
 
     public function login(LoginRequest $request)
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return $this->errorResponse('Invalid credentials', Response::HTTP_UNAUTHORIZED);
+            return $this->respondUnAuthenticated('Invalid credentials');
         }
         $user = Auth::user();
         $accessToken = $user->createToken('access_token', [TokenAbility::ACCESS_API->value], Carbon::now()->addMinute(config('sanctum.ac_expiration')));
         $refreshToken = $user->createToken('refresh_token', [TokenAbility::ISSUE_ACCESS_TOKEN->value], Carbon::now()->addMinute(config('sanctum.rt_expiration')));
-        return $this->successResponse(
+        return $this->respondWithSuccess(
             [
                 'verified' => $user->hasVerifiedEmail(),
                 'user' => new UserResource($user),
@@ -44,7 +44,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::user()->tokens()->delete();
-        return $this->successResponse([], 'User logged out successfully');
+        return $this->respondOk('User logged out successfully');
     }
 
     public function refreshToken()

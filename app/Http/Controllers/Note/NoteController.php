@@ -18,7 +18,7 @@ class NoteController extends Controller
         $currentWorkspace = $request->current_workspace;
         $this->authorize('viewAny', [Note::class, $currentWorkspace]);
         $notes = $currentWorkspace->notes;
-        return NoteResource::collection($notes);
+        return $this->respondWithSuccess(NoteResource::collection($notes),"Notes retrieved successfully");
     }
 
     public function store(NoteRequest $request)
@@ -26,14 +26,14 @@ class NoteController extends Controller
         $currentWorkspace = $request->current_workspace;
         $this->authorize('viewAny', [Note::class, $currentWorkspace]);
         $note = $currentWorkspace->createNote($request->validated());
-        return new NoteResource($note);
+        return $this->respondCreated(new NoteResource($note), 'Note created successfully');
     }
 
     public function show(Request $request,Note $note)
     {
         $currentWorkspace = $request->current_workspace;
         $this->authorize('view', [$note, $currentWorkspace]);
-        return new NoteResource($note);
+        return $this->respondWithSuccess(new NoteResource($note), 'Note retrieved successfully');
     }
 
     public function update(NoteRequest $request, Note $note)
@@ -41,7 +41,7 @@ class NoteController extends Controller
         $currentWorkspace = $request->current_workspace;
         $this->authorize('update', [$note, $currentWorkspace]);
         $note->update($request->validated());
-        return new NoteResource($note);
+        return $this->respondWithSuccess(new NoteResource($note), 'Note updated successfully');
     }
 
     public function destroy(Request $request,Note $note)
@@ -49,6 +49,6 @@ class NoteController extends Controller
         $currentWorkspace = $request->current_workspace;
         $this->authorize('delete', [$note, $currentWorkspace]);
         $note->delete();
-        return response()->json();
+        return $this->respondOk('Note deleted successfully');
     }
 }

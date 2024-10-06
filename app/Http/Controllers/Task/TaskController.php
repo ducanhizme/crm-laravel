@@ -27,20 +27,20 @@ class TaskController extends Controller
         $this->authorize('viewAny', Task::class);
         $workspace = $request->current_workspace;
         $tasks = $workspace->tasks()->with(['status', 'assignee'])->get();
-        return $this->successResponse(TaskResource::collection($tasks),'Tasks retrieved successfully');
+        return $this->respondWithSuccess(TaskResource::collection($tasks),'Tasks retrieved successfully');
     }
 
     public function store(TaskRequest $request)
     {
        $task=  $this->user->createTask(array_merge($request->validated(), ['workspace_id' => $request->current_workspace->id]));
-        return $this->successResponse(new TaskResource($task),'Task created successfully',201);
+        return $this->respondCreated(new TaskResource($task),'Task created successfully');
     }
 
     public function show(Request $request,Task $task)
     {
         $workspace = $request->current_workspace;
         $this->authorize('view', [$task,$workspace]);
-        return $this->successResponse(new TaskResource($task),'Task retrieved successfully');
+        return $this->respondWithSuccess(new TaskResource($task),'Task retrieved successfully');
     }
 
     public function update(TaskRequest $request, Task $task)
@@ -48,7 +48,7 @@ class TaskController extends Controller
         $workspace = $request->current_workspace;
         $this->authorize('update', [$task,$workspace]);
         $task->update($request->validated());
-        return $this->successResponse(new TaskResource($task),'Task updated successfully');
+        return $this->respondWithSuccess(new TaskResource($task),'Task updated successfully');
     }
 
     public function destroy(Request $request,Task $task)
@@ -56,6 +56,6 @@ class TaskController extends Controller
         $workspace = $request->current_workspace;
         $this->authorize('delete', [$task,$workspace]);
         $task->delete();
-        return $this->successResponse([],'Task deleted successfully');
+        return $this->respondOk('Task deleted successfully');
     }
 }

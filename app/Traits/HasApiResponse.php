@@ -26,14 +26,15 @@ trait HasApiResponse
     }
 
     function respondWithSuccess(
-        array|Arrayable|JsonSerializable|null $contents = null
+        array|Arrayable|JsonSerializable|null $contents = null,
+        string $message = "Success",
     ):JsonResponse
     {
         $contents = $this->morphToArray($contents)??[];
         $data = [] === $contents
             ? $this->defaultSuccessData
             : $contents;
-        return $this->apiResponse(data: $data,code: Response::HTTP_OK);
+        return $this->apiResponse(data: $data,code: Response::HTTP_OK,message: $message);
     }
 
     public function respondOk (string $message): JsonResponse
@@ -61,28 +62,29 @@ trait HasApiResponse
     {
         return $this->apiResponse(
             data: ['error' => $message ?? "Error"],
-            code: Response::HTTP_BAD_REQUEST
+            code: Response::HTTP_BAD_REQUEST,message: "Error"
         );
     }
 
     public function respondCreated(
-        array|Arrayable|JsonSerializable|null $data = null
+        array|Arrayable|JsonSerializable|null $data = null,
+        string $message = 'Created'
     ): JsonResponse {
         $data ??= [];
 
         return $this->apiResponse(
             data: $this->morphToArray(data: $data),
-            code: Response::HTTP_CREATED
+            code: Response::HTTP_CREATED,message: $message
         );
     }
 
     public function respondFailedValidation(
         string|Exception $message,
-        ?string $key = 'message'
+        ?string $key = 'failed_at'
     ): JsonResponse {
         return $this->apiResponse(
             data: [$key => $this->morphMessage($message)],
-            code: Response::HTTP_UNPROCESSABLE_ENTITY
+            code: Response::HTTP_UNPROCESSABLE_ENTITY,message: "Validation failed"
         );
     }
 
@@ -94,14 +96,14 @@ trait HasApiResponse
 
         return $this->apiResponse(
             data: $data,
-            code: Response::HTTP_NO_CONTENT
+            code: Response::HTTP_NO_CONTENT,message: "No content"
         );
     }
 
 
-    private function apiResponse(array $data, int $code = 200): JsonResponse
+    private function apiResponse(array $data, int $code = 200,string $message =""): JsonResponse
     {
-        return response()->json(data: $data, status: $code);
+        return response()->json(data: array_merge($data,["message"=>$message]), status: $code);
     }
 
     private function morphToArray(array|Arrayable|JsonSerializable|null $data): ?array
