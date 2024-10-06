@@ -18,12 +18,10 @@ class TaskResource extends JsonResource
             'body' => $this->body,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
             'workspace_id' => $this->workspace_id,
             'created_by' => $this->created_by,
             'assignee' => $this->assignee,
-
-            'workspace' => new WorkspaceResource($this->whenLoaded('workspace')),
+            'status' =>$this->whenLoaded('status',fn($status) => $status->name),
         ];
     }
 }

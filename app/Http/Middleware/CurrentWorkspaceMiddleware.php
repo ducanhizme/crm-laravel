@@ -3,11 +3,13 @@
 namespace App\Http\Middleware;
 
 use App\Models\Workspace;
+use App\Traits\HasApiResponse;
 use Closure;
 use Illuminate\Http\Request;
 
 class CurrentWorkspaceMiddleware
 {
+    use HasApiResponse;
     public function handle(Request $request, Closure $next)
     {
         $currentWorkspaceId = $request->header('x-current-workspace-id');
@@ -15,7 +17,7 @@ class CurrentWorkspaceMiddleware
             $request->merge(['current_workspace' => $currentWorkspace]);
             return $next($request);
         }else{
-            return response()->json(['message' => 'Invalid workspace'], 404);
+            return $this->errorResponse('Workspace has id '.$currentWorkspaceId.' not found', 404);
         }
     }
 }
