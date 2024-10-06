@@ -38,6 +38,16 @@ class Workspace extends Model
         return $this->hasMany(Invitation::class);
     }
 
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
+
+    public function createNote($data):Note
+    {
+        $note = $data instanceof Note ? $data :array_merge($data, ['created_by' =>auth()->id()]);
+       return $this->notes()->create($note);
+    }
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class,'workspace_id');

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Events\InvitationSentEvent;
+use App\Events\RegisterEvent;
 use App\Http\Requests\WorkspaceRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -79,11 +81,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public static function inviteToWorkspace(Request $request): Invitation
     {
         $workspace = $request->current_workspace;
-        return $workspace->invitations()->create([
+        $invitation=  $workspace->invitations()->create([
             'email' => $request->email,
             'token' => \Str::random(32),
             'expires_at' => now()->addHour(),
         ]) ;
+        InvitationSentEvent::dispatch($invitation);
+        return $invitation;
     }
 
     public function hasJoinedWorkspace(string $workspaceId): bool
@@ -110,4 +114,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->tasks()->create($request);
     }
 
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
 }

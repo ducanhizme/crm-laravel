@@ -62,3 +62,6 @@ Route::apiResource('statuses', \App\Http\Controllers\Task\StatusController::clas
 //    Route::post('register', [AuthController::class, 'register']);
 //    Route::post('login', [AuthController::class, 'login']);
 //});
+Route::apiResource('notes', \App\Http\Controllers\Note\NoteController::class)
+    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
+
