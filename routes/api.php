@@ -3,6 +3,8 @@
 use App\Enums\TokenAbility;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Workspace\WorkspaceController;
+use App\Http\Controllers\EventController; // Added EventController
+use App\Http\Controllers\GoogleCalendarController; // Added GoogleCalendarController
 use Illuminate\Support\Facades\Route;
 
 Route::get('email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
@@ -65,3 +67,11 @@ Route::apiResource('statuses', \App\Http\Controllers\Task\StatusController::clas
 Route::apiResource('notes', \App\Http\Controllers\Note\NoteController::class)
     ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value,\App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
 
+Route::apiResource('events', EventController::class)
+    ->middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value, \App\Http\Middleware\CurrentWorkspaceMiddleware::class]);
+
+// Google Calendar OAuth Routes
+Route::middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value])->group(function () {
+    Route::get('/google/calendar/auth', [GoogleCalendarController::class, 'redirectToGoogle'])->name('google.calendar.auth');
+    Route::get('/google/calendar/callback', [GoogleCalendarController::class, 'handleGoogleCallback'])->name('google.calendar.callback');
+});

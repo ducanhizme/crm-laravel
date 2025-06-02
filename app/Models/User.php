@@ -31,7 +31,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_name',
         'email',
         'password',
-        'google_id'
+        'google_id',
+        'google_calendar_access_token',
+        'google_calendar_refresh_token',
+        'google_calendar_token_expires_at',
     ];
 
     /**
@@ -42,6 +45,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'google_calendar_access_token',
+        'google_calendar_refresh_token',
     ];
 
     /**
@@ -54,6 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'google_calendar_token_expires_at' => 'datetime',
         ];
     }
 
